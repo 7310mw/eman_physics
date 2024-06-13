@@ -1,0 +1,287 @@
+\documentclass[]{ltjsarticle}% LuaLaTeXを使うときはltjsarticleを指定する
+
+% 数式表示用に追加
+\usepackage{amsmath}
+\usepackage{amssymb}
+% figure表示用に追加
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{color}
+% ソースコード表示用に追加
+\usepackage{tcolorbox}
+\usepackage{alltt}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+
+\title{線形代数\thanks{https://eman-physics.net/math/linear01.html}}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents% 目次を作成
+\clearpage
+
+\section{線形代数とは}
+\label{"sec:linear01"}
+
+\subsection{線形代数とは何か}
+
+線形代数の「線形」は「Linear」の訳であり、線の形をしたという意味である。
+ところで、一次関数のグラフは直線であるが、二次関数以上になると曲線となる。また、代数とは、
+変数を記号で表しそこに数値を代入することで方程式を解いたりする学問である。
+つまり、線形代数とは「連立一次方程式」についての学問と言える。
+線形代数では「連立一次方程式をいかに効率よく解くか」というテクニックを追求した結果を学ぶことになる。
+
+\subsection{本当に連立一次方程式から始める}
+まずは次のような連立方程式を解くことを考えてみる。
+\begin{equation}
+  \begin{matrix}
+    \label{eq:eq1}
+    3x & +2y & -6z & = 7  \\
+    4x &     & +3z & = 15 \\
+    5x & -6y & + z & = 4  \\
+  \end{matrix}
+\end{equation}
+上記の連立方程式は、計算のルールさえ破らなければ次のように係数だけ抜き出した形で表せる。
+\begin{equation}
+  \label{eq:eq2}
+  \left(
+  \begin{array}{rrr|r}
+      3 & 2  & -6 & 7  \\
+      4 & 0  & 3  & 15 \\
+      5 & -6 & 1  & 4  \\
+    \end{array}
+  \right)
+\end{equation}
+
+計算のルールとは、特別なものではなく以下のものを指す。
+\begin{enumerate}
+  \item ある行の数値の全てを定数倍(ただし0を除く)してもよい。
+  \item ある行を定数倍したものを別の行に加算してもよい。
+  \item 2つの行を入れ替えてもよい。(1. 2.のルールの組合せから派生)
+\end{enumerate}
+ここで、横一列の数値の並びを「\textcolor{red}{行}」と呼び、縦一列のことを「\textcolor{red}{列}」と呼ぶ、\\
+
+
+これらから、(\ref{eq:eq1})の連立方程式を解くためには、(\ref{eq:eq2})行列を上記のルールを使って以下の形に変形させることが目標となる。
+\begin{equation}
+  \label{eq:eq3}
+  \left(
+  \begin{array}{rrr|r}
+      1 & 0 & 0 & 3 \\
+      0 & 1 & 0 & 2 \\
+      0 & 0 & 1 & 1 \\
+    \end{array}
+  \right)
+\end{equation}
+
+\subsection{連立方程式が解けない場合}
+全ての連立方程式が(\ref{eq:eq3})行列のような形になるとは限らない。
+解き方の問題ではなく、そもそも連立方程式の方に問題があるケースである。
+
+\begin{itemize}
+  \item 例１　一つ以上の行の数字が0になってしまう場合
+        \begin{equation}
+          \label{eq:eq4}
+          \left(
+          \begin{array}{rrr}
+              5 & 2 & 3  \\
+              0 & 4 & -7 \\
+              0 & 0 & 0  \\
+            \end{array}
+          \right)
+        \end{equation}
+        この例では3行目のが横一列すべて0になってしまっている。
+
+        なぜこのような状況になったか考えると、こうなる直前にどこかの行を定数倍したものを3行目から引いた結果、この形になったはずである。
+        つまり、方程式に立ち返って考えると、左辺のどこかの行とそっくり似た形の式であったため3行目が消されたと考えられる。
+
+
+  \item 例２　ある行が右辺も含めてすべて0になってしまう場合
+        \begin{equation}
+          \label{eq:eq5}
+          \left(
+          \begin{array}{rrr|r}
+              5 & 2 & 3  & 11 \\
+              0 & 4 & -7 & 2  \\
+              0 & 0 & 0  & 0  \\
+            \end{array}
+          \right)
+        \end{equation}
+        こうなる直前、二つの行が右辺・左辺どちらも定数倍しただけの関係にあった。つまり、全く同じ意味の式が二つ並んでいたことになる。
+
+        この時、変数が3つあることに対して条件式は2つしかなかったことになるため、解についての制限がゆるく、解は無数に存在すると言える。
+
+
+  \item 例３　左辺の係数がすべて0になり、右辺の数値だけ0ではない場合
+        \begin{equation}
+          \label{eq:eq6}
+          \left(
+          \begin{array}{rrr|r}
+              5 & 2 & 3  & 11 \\
+              0 & 4 & -7 & 2  \\
+              0 & 0 & 0  & 8  \\
+            \end{array}
+          \right)
+        \end{equation}
+        なぜこのような状況になったか考えると、こうなる直前に左辺の形が全く同じにも関わらず右辺の値が異なるという、
+        矛盾する二つの式が並んでいたと考えられる。
+
+        この場合、全ての条件式を同時に満たす解は無いため、「解なし」という判断になる。
+\end{itemize}
+
+
+
+\section{クラメルの公式}
+\label{"sec:linear02"}
+
+\subsection{必勝パターンは上三角形}
+
+ガウスの消去法に従うと具体的には以下の規則で表示できる。
+\begin{equation}
+  \label{eq:eq0202}
+  \begin{vmatrix}
+    a & b \\
+    c & d \\
+  \end{vmatrix}
+  \equiv%「≡」
+  ad - bc
+\end{equation}
+これにより、式の\(x,y\)はそれぞれ以下のように表すことができる。
+\begin{equation}
+  \label{eq:eq0203}
+  x =
+  \frac{
+    \begin{vmatrix}
+      \textcolor{red}{s} & b \\
+      \textcolor{red}{t} & d \\
+    \end{vmatrix}
+  }
+  {
+    \begin{vmatrix}
+      a & b \\
+      c & d \\
+    \end{vmatrix}
+  },
+  y =
+  \frac{
+    \begin{vmatrix}
+      a & \textcolor{red}{s} \\
+      c & \textcolor{red}{t} \\
+    \end{vmatrix}
+  }
+  {
+    \begin{vmatrix}
+      a & b \\
+      c & d \\
+    \end{vmatrix}
+  }
+\end{equation}
+同様に、3次ベクトルであると以下の行列式となり、\(x,y,z\)は次の形式で表すことができる。
+\begin{equation}
+  \label{eq:eq0204}
+  \begin{vmatrix}
+    a & b & c \\
+    d & e & f \\
+    g & h & i \\
+  \end{vmatrix}
+  \equiv%「≡」
+  aei + bjg + cdh - afh - bdi - ceg
+\end{equation}
+\begin{equation}
+  \label{eq:eq0205}
+  x =
+  \frac{
+    \begin{vmatrix}
+      \textcolor{red}{s} & b & c \\
+      \textcolor{red}{t} & e & f \\
+      \textcolor{red}{u} & h & i \\
+    \end{vmatrix}
+  }
+  {
+    \begin{vmatrix}
+      a & b & c \\
+      d & e & f \\
+      g & h & i \\
+    \end{vmatrix}
+  },
+  y =
+  \frac{
+    \begin{vmatrix}
+      a & \textcolor{red}{s} & c \\
+      d & \textcolor{red}{t} & f \\
+      g & \textcolor{red}{u} & i \\
+    \end{vmatrix}
+  }
+  {
+    \begin{vmatrix}
+      a & b & c \\
+      d & e & f \\
+      g & h & i \\
+    \end{vmatrix}
+  },
+  z =
+  \frac{
+    \begin{vmatrix}
+      a & b & \textcolor{red}{s} \\
+      d & e & \textcolor{red}{t} \\
+      g & h & \textcolor{red}{u} \\
+    \end{vmatrix}
+  }
+  {
+    \begin{vmatrix}
+      a & b & c \\
+      d & e & f \\
+      g & h & i \\
+    \end{vmatrix}
+  }
+\end{equation}
+
+\subsection{行列式の一般的な定義}
+\(n\)次の場合、行列式の定義は以下で表される。
+\begin{equation}
+  \label{eq:eq020201}
+  \begin{vmatrix}
+    \begin{array}{rrcr}
+      a_{11} & a_{12} & \cdots & a_{1n} \\
+      a_{21} & a_{22} & \cdots & a_{2n} \\
+      \vdots & \vdots & \ddots & \vdots \\
+      a_{n1} & a_{n2} & \cdots & a_{nn} \\
+    \end{array}
+  \end{vmatrix}
+  =
+  \Sigma_{\sigma}[sgn(\sigma) a_{1\sigma\langle 1\rangle} a_{2\sigma\langle 2\rangle} \cdots a_{n\sigma\langle n\rangle}]
+\end{equation}
+
+
+\section{行列式のルール}
+\label{"sec:linear03"}
+
+\subsection{余因子展開}
+\(n\)次の正方行列を行列\(A\)と呼ぶことにする。
+
+\section{一次変換}
+
+\section{逆行列の求め方}
+
+\section{一次変換の図形的イメージ}
+
+\section{線形独立とランク}
+
+\section{基底ベクトルの変換}
+
+\section{固有値と固有ベクトル}
+
+\section{二次変換}
+
+\section{線形空間}
+
+\section{ブラケット記法}
+
+\section{ユニタリ行列}
+
+
+
+\end{document}
